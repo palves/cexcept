@@ -103,7 +103,7 @@ extern const struct gdb_exception exception_none;
 /* Wrap set/long jmp so that it's more portable (internal to
    exceptions).  */
 
-#if defined(HAVE_SIGSETJMP)
+#ifndef _WIN32
 #define EXCEPTIONS_SIGJMP_BUF		sigjmp_buf
 #define EXCEPTIONS_SIGSETJMP(buf)	sigsetjmp((buf), 1)
 #define EXCEPTIONS_SIGLONGJMP(buf,val)	siglongjmp((buf), (val))
