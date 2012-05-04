@@ -54,7 +54,7 @@ struct catcher
 {
   enum catcher_state state;
   /* Jump buffer pointing back at the exception handler.  */
-  EXCEPTIONS_SIGJMP_BUF buf;
+  CEXCEPT_SIGJMP_BUF buf;
   /* Status buffer belonging to the exception handler.  */
   volatile struct cexception *exception;
   /* Saved/current state.  */
@@ -85,7 +85,7 @@ catcher_list_size (void)
 
 #define XZALLOC(TYPE) ((TYPE *) calloc (1, sizeof (TYPE)))
 
-EXCEPTIONS_SIGJMP_BUF *
+CEXCEPT_SIGJMP_BUF *
 cexcept_state_mc_init (volatile struct cexception *exception,
 		       return_mask mask)
 {
@@ -231,7 +231,7 @@ cexcept_throw (struct cexception exception)
      be zero, by definition in defs.h.  */
   cexcept_state_mc (CATCH_THROWING);
   *current_catcher->exception = exception;
-  EXCEPTIONS_SIGLONGJMP (current_catcher->buf, exception.reason);
+  CEXCEPT_SIGLONGJMP (current_catcher->buf, exception.reason);
 }
 
 /* A stack of exception messages.

@@ -17,8 +17,8 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
-#ifndef EXCEPTIONS_H
-#define EXCEPTIONS_H
+#ifndef CEXCEPT_H
+#define CEXCEPT_H
 
 #include <setjmp.h>
 #include <stdarg.h>
@@ -62,18 +62,18 @@ struct cexception
    exceptions).  */
 
 #ifndef _WIN32
-#define EXCEPTIONS_SIGJMP_BUF		sigjmp_buf
-#define EXCEPTIONS_SIGSETJMP(buf)	sigsetjmp((buf), 1)
-#define EXCEPTIONS_SIGLONGJMP(buf,val)	siglongjmp((buf), (val))
+#define CEXCEPT_SIGJMP_BUF sigjmp_buf
+#define CEXCEPT_SIGSETJMP(buf) sigsetjmp ((buf), 1)
+#define CEXCEPT_SIGLONGJMP(buf, val) siglongjmp ((buf), (val))
 #else
-#define EXCEPTIONS_SIGJMP_BUF		jmp_buf
-#define EXCEPTIONS_SIGSETJMP(buf)	setjmp(buf)
-#define EXCEPTIONS_SIGLONGJMP(buf,val)	longjmp((buf), (val))
+#define CEXCEPT_SIGJMP_BUF jmp_buf
+#define CEXCEPT_SIGSETJMP(buf) setjmp (buf)
+#define CEXCEPT_SIGLONGJMP(buf, val) longjmp ((buf), (val))
 #endif
 
 /* Functions to drive the exceptions state m/c (internal to
    exceptions).  */
-EXCEPTIONS_SIGJMP_BUF *cexcept_state_mc_init (volatile struct
+CEXCEPT_SIGJMP_BUF *cexcept_state_mc_init (volatile struct
 					      cexception *exception,
 					      return_mask mask);
 int cexcept_state_mc_action_iter (void);
@@ -103,9 +103,9 @@ int cexcept_state_mc_action_iter_1 (void);
 
 #define TRY_CATCH(EXCEPTION,MASK) \
      { \
-       EXCEPTIONS_SIGJMP_BUF *buf = \
+       CEXCEPT_SIGJMP_BUF *buf = \
 	 cexcept_state_mc_init (&(EXCEPTION), (MASK)); \
-       EXCEPTIONS_SIGSETJMP (*buf); \
+       CEXCEPT_SIGSETJMP (*buf); \
      } \
      while (cexcept_state_mc_action_iter ()) \
        while (cexcept_state_mc_action_iter_1 ())
