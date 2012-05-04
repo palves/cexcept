@@ -1,10 +1,10 @@
 AC_PREREQ(2.60)
-AC_INIT([abc],
+AC_INIT([cexcept],
         [4],
-        [abc-devel@example.com],
-        [abc],
-        [http://www.example.com/abc/])
-AC_CONFIG_SRCDIR([src/libabc.c])
+        [alves.ped@gmail.com],
+        [cexcept],
+        [http://www.example.com/cexcept/])
+AC_CONFIG_SRCDIR([src/libcexcept.c])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([check-news foreign 1.11 -Wall -Wno-portability silent-rules tar-pax no-dist-gzip dist-xz subdir-objects])
 AC_PROG_CC_STDC

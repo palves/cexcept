@@ -7,7 +7,7 @@ AM_CPPFLAGS = \
 	-include $(top_builddir)/config.h \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
 	-DLIBEXECDIR=\""$(libexecdir)"\" \
-	-I${top_srcdir}/src/abc \
+	-I${top_srcdir}/src/cexcept \
 	-I${top_srcdir}/src
 
 AM_CFLAGS = ${my_CFLAGS} \
@@ -31,31 +31,31 @@ SED_PROCESS = \
 %.pc: %.pc.in Makefile
 	$(SED_PROCESS)
 
-LIBABC_CURRENT=2
-LIBABC_REVISION=0
-LIBABC_AGE=2
+LIBCEXCEPT_CURRENT=2
+LIBCEXCEPT_REVISION=0
+LIBCEXCEPT_AGE=2
 
-pkginclude_HEADERS = src/abc/libabc.h
-lib_LTLIBRARIES = src/libabc.la
+pkginclude_HEADERS = src/cexcept/libcexcept.h
+lib_LTLIBRARIES = src/libcexcept.la
 
-src_libabc_la_SOURCES =\
-	src/libabc-private.h \
-	src/libabc.c
+src_libcexcept_la_SOURCES =\
+	src/libcexcept-private.h \
+	src/libcexcept.c
 
-EXTRA_DIST += src/libabc.sym
+EXTRA_DIST += src/libcexcept.sym
 
-src_libabc_la_LDFLAGS = $(AM_LDFLAGS) \
-	-version-info $(LIBABC_CURRENT):$(LIBABC_REVISION):$(LIBABC_AGE) \
-	-Wl,--version-script=$(top_srcdir)/src/libabc.sym
-src_libabc_la_DEPENDENCIES = ${top_srcdir}/src/libabc.sym
+src_libcexcept_la_LDFLAGS = $(AM_LDFLAGS) \
+	-version-info $(LIBCEXCEPT_CURRENT):$(LIBCEXCEPT_REVISION):$(LIBCEXCEPT_AGE) \
+	-Wl,--version-script=$(top_srcdir)/src/libcexcept.sym
+src_libcexcept_la_DEPENDENCIES = ${top_srcdir}/src/libcexcept.sym
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = src/libabc.pc
-EXTRA_DIST += src/libabc.pc.in
-CLEANFILES += src/libabc.pc
+pkgconfig_DATA = src/libcexcept.pc
+EXTRA_DIST += src/libcexcept.pc.in
+CLEANFILES += src/libcexcept.pc
 
-TESTS = src/test-libabc
+TESTS = src/test-libcexcept
 
-check_PROGRAMS = src/test-libabc
-src_test_libabc_SOURCES = src/test-libabc.c
-src_test_libabc_LDADD = src/libabc.la
+check_PROGRAMS = src/test-libcexcept
+src_test_libcexcept_SOURCES = src/test-libcexcept.c
+src_test_libcexcept_LDADD = src/libcexcept.la
