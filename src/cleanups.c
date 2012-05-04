@@ -17,9 +17,6 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
-#include "defs.h"
-#include "gdb_assert.h"
-
 /* The cleanup list records things that have to be undone
    if an error happens (descriptors to be closed, memory to be freed, etc.)
    Each link in the chain records a function to call and an
@@ -34,6 +31,11 @@
    to additionally set the 'free_arg' member to a function that will
    free that memory.  This function will be called both when the cleanup
    is executed and when it's discarded.  */
+
+#include "cleanups.h"
+
+#include <stdlib.h>
+#include <assert.h>
 
 struct cleanup
 {
@@ -80,7 +82,7 @@ make_my_cleanup2 (struct cleanup **pmy_chain, make_cleanup_ftype *function,
 		  void *arg,  void (*free_arg) (void *))
 {
   struct cleanup *new
-    = (struct cleanup *) xmalloc (sizeof (struct cleanup));
+    = (struct cleanup *) malloc (sizeof (struct cleanup));
   struct cleanup *old_chain = *pmy_chain;
 
   new->next = *pmy_chain;
@@ -89,7 +91,7 @@ make_my_cleanup2 (struct cleanup **pmy_chain, make_cleanup_ftype *function,
   new->arg = arg;
   *pmy_chain = new;
 
-  gdb_assert (old_chain != NULL);
+  assert (old_chain != NULL);
   return old_chain;
 }
 
@@ -155,7 +157,7 @@ do_my_cleanups (struct cleanup **pmy_chain,
       (*ptr->function) (ptr->arg);
       if (ptr->free_arg)
 	(*ptr->free_arg) (ptr->arg);
-      xfree (ptr);
+      free (ptr);
     }
 }
 
@@ -202,7 +204,7 @@ discard_my_cleanups (struct cleanup **pmy_chain,
       *pmy_chain = ptr->next;
       if (ptr->free_arg)
 	(*ptr->free_arg) (ptr->arg);
-      xfree (ptr);
+      free (ptr);
     }
 }
 
