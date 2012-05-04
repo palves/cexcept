@@ -23,6 +23,10 @@
 #include <setjmp.h>
 #include <stdarg.h>
 
+/* FIXME */
+#define ATTRIBUTE_NORETURN
+#define ATTRIBUTE_PRINTF(a, b)
+
 /* Reasons for calling throw_exception.  NOTE: all reason values must
    be less than zero.  enum value 0 is reserved for internal use as
    the return value from an initial setjmp.  The function
@@ -107,9 +111,6 @@ int exceptions_state_mc_action_iter_1 (void);
        while (exceptions_state_mc_action_iter_1 ())
 
 /* *INDENT-ON* */
-
-#define ATTRIBUTE_NORETURN
-#define ATTRIBUTE_PRINTF(a, b)
 
 /* Throw an exception (as described by "struct cexception").  Will
    execute a LONG JUMP to the inner most containing exception handler
