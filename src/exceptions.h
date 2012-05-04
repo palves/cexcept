@@ -23,10 +23,10 @@
 #include <setjmp.h>
 #include <stdarg.h>
 
-/* Reasons for calling throw_exception().  NOTE: all reason values
-   must be less than zero.  enum value 0 is reserved for internal use
-   as the return value from an initial setjmp().  The function
-   catch_exceptions() reserves values >= 0 as legal results from its
+/* Reasons for calling throw_exception.  NOTE: all reason values must
+   be less than zero.  enum value 0 is reserved for internal use as
+   the return value from an initial setjmp.  The function
+   catch_exceptions reserves values >= 0 as valid results from its
    wrapped function.  */
 
 enum return_reason
@@ -61,15 +61,16 @@ enum errors {
      storage.  */
   TLS_NO_LIBRARY_SUPPORT_ERROR,
 
-  /* Load module not found while attempting to find thread local storage.  */
+  /* Load module not found while attempting to find thread local
+     storage.  */
   TLS_LOAD_MODULE_NOT_FOUND_ERROR,
 
   /* Thread local storage has not been allocated yet.  */
   TLS_NOT_ALLOCATED_YET_ERROR,
 
   /* Something else went wrong while attempting to find thread local
-     storage.  The ``struct cexception'' message field provides
-     more detail.  */
+     storage.  The ``struct cexception'' message field provides more
+     detail.  */
   TLS_GENERIC_ERROR,
 
   /* Problem parsing an XML document.  */
