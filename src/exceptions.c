@@ -86,8 +86,8 @@ catcher_list_size (void)
 #define XZALLOC(TYPE) ((TYPE *) calloc (1, sizeof (TYPE)))
 
 EXCEPTIONS_SIGJMP_BUF *
-exceptions_state_mc_init (volatile struct cexception *exception,
-			  return_mask mask)
+cexcept_state_mc_init (volatile struct cexception *exception,
+		       return_mask mask)
 {
   struct catcher *new_catcher = XZALLOC (struct catcher);
 
@@ -130,7 +130,7 @@ catcher_pop (void)
    again, zero if it should abort.  */
 
 static int
-exceptions_state_mc (enum catcher_action action)
+cexcept_state_mc (enum catcher_action action)
 {
   switch (current_catcher->state)
     {
@@ -208,15 +208,15 @@ exceptions_state_mc (enum catcher_action action)
 }
 
 int
-exceptions_state_mc_action_iter (void)
+cexcept_state_mc_action_iter (void)
 {
-  return exceptions_state_mc (CATCH_ITER);
+  return cexcept_state_mc (CATCH_ITER);
 }
 
 int
-exceptions_state_mc_action_iter_1 (void)
+cexcept_state_mc_action_iter_1 (void)
 {
-  return exceptions_state_mc (CATCH_ITER_1);
+  return cexcept_state_mc (CATCH_ITER_1);
 }
 
 /* Return EXCEPTION to the nearest containing TRY_CATCH.  */
@@ -229,7 +229,7 @@ cexcept_throw (struct cexception exception)
   /* Jump to the containing catch_errors() call, communicating REASON
      to that call via setjmp's return value.  Note that REASON can't
      be zero, by definition in defs.h.  */
-  exceptions_state_mc (CATCH_THROWING);
+  cexcept_state_mc (CATCH_THROWING);
   *current_catcher->exception = exception;
   EXCEPTIONS_SIGLONGJMP (current_catcher->buf, exception.reason);
 }

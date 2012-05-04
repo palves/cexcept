@@ -73,11 +73,11 @@ struct cexception
 
 /* Functions to drive the exceptions state m/c (internal to
    exceptions).  */
-EXCEPTIONS_SIGJMP_BUF *exceptions_state_mc_init (volatile struct
-						 cexception *exception,
-						 return_mask mask);
-int exceptions_state_mc_action_iter (void);
-int exceptions_state_mc_action_iter_1 (void);
+EXCEPTIONS_SIGJMP_BUF *cexcept_state_mc_init (volatile struct
+					      cexception *exception,
+					      return_mask mask);
+int cexcept_state_mc_action_iter (void);
+int cexcept_state_mc_action_iter_1 (void);
 
 /* Macro to wrap up standard try/catch behavior.
 
@@ -104,11 +104,11 @@ int exceptions_state_mc_action_iter_1 (void);
 #define TRY_CATCH(EXCEPTION,MASK) \
      { \
        EXCEPTIONS_SIGJMP_BUF *buf = \
-	 exceptions_state_mc_init (&(EXCEPTION), (MASK)); \
+	 cexcept_state_mc_init (&(EXCEPTION), (MASK)); \
        EXCEPTIONS_SIGSETJMP (*buf); \
      } \
-     while (exceptions_state_mc_action_iter ()) \
-       while (exceptions_state_mc_action_iter_1 ())
+     while (cexcept_state_mc_action_iter ()) \
+       while (cexcept_state_mc_action_iter_1 ())
 
 /* *INDENT-ON* */
 
