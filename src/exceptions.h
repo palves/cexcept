@@ -97,9 +97,6 @@ struct gdb_exception
   const char *message;
 };
 
-/* A pre-defined non-exception.  */
-extern const struct gdb_exception exception_none;
-
 /* Wrap set/long jmp so that it's more portable (internal to
    exceptions).  */
 
