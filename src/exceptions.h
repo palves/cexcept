@@ -45,8 +45,10 @@ typedef int return_mask;
 
 /* Describe all exceptions.  */
 
+#define CEXCEPT_NO_ERROR 0
+
 enum errors {
-  GDB_NO_ERROR,
+  GDB_NO_ERROR = CEXCEPT_NO_ERROR,
 
   /* Any generic error, the corresponding text is in
      exception.message.  */
@@ -66,7 +68,7 @@ enum errors {
   TLS_NOT_ALLOCATED_YET_ERROR,
 
   /* Something else went wrong while attempting to find thread local
-     storage.  The ``struct gdb_exception'' message field provides
+     storage.  The ``struct cexception'' message field provides
      more detail.  */
   TLS_GENERIC_ERROR,
 
@@ -90,7 +92,7 @@ enum errors {
   NR_ERRORS
 };
 
-struct gdb_exception
+struct cexception
 {
   enum return_reason reason;
   enum errors error;
@@ -113,7 +115,7 @@ struct gdb_exception
 /* Functions to drive the exceptions state m/c (internal to
    exceptions).  */
 EXCEPTIONS_SIGJMP_BUF *exceptions_state_mc_init (volatile struct
-						 gdb_exception *exception,
+						 cexception *exception,
 						 return_mask mask);
 int exceptions_state_mc_action_iter (void);
 int exceptions_state_mc_action_iter_1 (void);
@@ -129,7 +131,7 @@ int exceptions_state_mc_action_iter_1 (void);
 
    *INDENT-OFF*
 
-   volatile struct gdb_exception e;
+   volatile struct cexception e;
    TRY_CATCH (e, RETURN_MASK_ERROR)
      {
      }
@@ -154,7 +156,7 @@ int exceptions_state_mc_action_iter_1 (void);
 #define ATTRIBUTE_NORETURN
 #define ATTRIBUTE_PRINTF(a, b)
 
-/* Throw an exception (as described by "struct gdb_exception").  Will
+/* Throw an exception (as described by "struct cexception").  Will
    execute a LONG JUMP to the inner most containing exception handler
    established using catch_exceptions() (or similar).
 
@@ -165,7 +167,7 @@ int exceptions_state_mc_action_iter_1 (void);
    be a good thing or a dangerous thing.'' -- the Existential
    Wombat.  */
 
-extern void throw_exception (struct gdb_exception exception)
+extern void throw_exception (struct cexception exception)
      ATTRIBUTE_NORETURN;
 extern void throw_verror (enum errors, const char *fmt, va_list ap)
      ATTRIBUTE_NORETURN ATTRIBUTE_PRINTF (2, 0);

@@ -30,7 +30,7 @@
 #define internal_error(STR) \
   assert (0)
 
-const struct gdb_exception exception_none = { 0, GDB_NO_ERROR, NULL };
+const struct cexception exception_none = { 0, CEXCEPT_NO_ERROR, NULL };
 
 /* Possible catcher states.  */
 enum catcher_state {
@@ -56,7 +56,7 @@ struct catcher
   /* Jump buffer pointing back at the exception handler.  */
   EXCEPTIONS_SIGJMP_BUF buf;
   /* Status buffer belonging to the exception handler.  */
-  volatile struct gdb_exception *exception;
+  volatile struct cexception *exception;
   /* Saved/current state.  */
   int mask;
   struct cleanup *saved_cleanup_chain;
@@ -86,14 +86,14 @@ catcher_list_size (void)
 #define XZALLOC(TYPE) ((TYPE *) calloc (1, sizeof (TYPE)))
 
 EXCEPTIONS_SIGJMP_BUF *
-exceptions_state_mc_init (volatile struct gdb_exception *exception,
+exceptions_state_mc_init (volatile struct cexception *exception,
 			  return_mask mask)
 {
   struct catcher *new_catcher = XZALLOC (struct catcher);
 
   /* Start with no exception, save it's address.  */
   exception->reason = 0;
-  exception->error = GDB_NO_ERROR;
+  exception->error = CEXCEPT_NO_ERROR;
   exception->message = NULL;
   new_catcher->exception = exception;
 
@@ -183,7 +183,7 @@ exceptions_state_mc (enum catcher_action action)
 	{
 	case CATCH_ITER:
 	  {
-	    struct gdb_exception exception = *current_catcher->exception;
+	    struct cexception exception = *current_catcher->exception;
 
 	    if (current_catcher->mask & RETURN_MASK (exception.reason))
 	      {
@@ -222,7 +222,7 @@ exceptions_state_mc_action_iter_1 (void)
 /* Return EXCEPTION to the nearest containing catch_errors().  */
 
 void
-throw_exception (struct gdb_exception exception)
+throw_exception (struct cexception exception)
 {
   do_cleanups (all_cleanups ());
 
@@ -253,7 +253,7 @@ static void ATTRIBUTE_NORETURN ATTRIBUTE_PRINTF (3, 0)
 throw_it (enum return_reason reason, enum errors error, const char *fmt,
 	  va_list ap)
 {
-  struct gdb_exception e;
+  struct cexception e;
   char *new_message;
   int depth = catcher_list_size ();
 
@@ -295,7 +295,7 @@ throw_verror (enum errors error, const char *fmt, va_list ap)
 void
 throw_vfatal (const char *fmt, va_list ap)
 {
-  throw_it (RETURN_QUIT, GDB_NO_ERROR, fmt, ap);
+  throw_it (RETURN_QUIT, CEXCEPT_NO_ERROR, fmt, ap);
 }
 
 void
