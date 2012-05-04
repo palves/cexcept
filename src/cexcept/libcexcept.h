@@ -1,5 +1,5 @@
 /*
-  libabc - something with abc
+  libcexcept - something with cexcept
 
   Copyright (C) 2011 Someone <someone@example.com>
 
@@ -18,8 +18,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef _LIBABC_H_
-#define _LIBABC_H_
+#ifndef _LIBCEXCEPT_H_
+#define _LIBCEXCEPT_H_
 
 #include <stdarg.h>
 
@@ -28,49 +28,49 @@ extern "C" {
 #endif
 
 /*
- * abc_ctx
+ * cexcept_ctx
  *
  * library user context - reads the config and system
  * environment, user variables, allows custom logging
  */
-struct abc_ctx;
-struct abc_ctx *abc_ref(struct abc_ctx *ctx);
-struct abc_ctx *abc_unref(struct abc_ctx *ctx);
-int abc_new(struct abc_ctx **ctx);
-void abc_set_log_fn(struct abc_ctx *ctx,
-                  void (*log_fn)(struct abc_ctx *ctx,
+struct cexcept_ctx;
+struct cexcept_ctx *cexcept_ref(struct cexcept_ctx *ctx);
+struct cexcept_ctx *cexcept_unref(struct cexcept_ctx *ctx);
+int cexcept_new(struct cexcept_ctx **ctx);
+void cexcept_set_log_fn(struct cexcept_ctx *ctx,
+                  void (*log_fn)(struct cexcept_ctx *ctx,
                                  int priority, const char *file, int line, const char *fn,
                                  const char *format, va_list args));
-int abc_get_log_priority(struct abc_ctx *ctx);
-void abc_set_log_priority(struct abc_ctx *ctx, int priority);
-void *abc_get_userdata(struct abc_ctx *ctx);
-void abc_set_userdata(struct abc_ctx *ctx, void *userdata);
+int cexcept_get_log_priority(struct cexcept_ctx *ctx);
+void cexcept_set_log_priority(struct cexcept_ctx *ctx, int priority);
+void *cexcept_get_userdata(struct cexcept_ctx *ctx);
+void cexcept_set_userdata(struct cexcept_ctx *ctx, void *userdata);
 
 /*
- * abc_list
+ * cexcept_list
  *
- * access to abc generated lists
+ * access to cexcept generated lists
  */
-struct abc_list_entry;
-struct abc_list_entry *abc_list_entry_get_next(struct abc_list_entry *list_entry);
-const char *abc_list_entry_get_name(struct abc_list_entry *list_entry);
-const char *abc_list_entry_get_value(struct abc_list_entry *list_entry);
-#define abc_list_entry_foreach(list_entry, first_entry) \
+struct cexcept_list_entry;
+struct cexcept_list_entry *cexcept_list_entry_get_next(struct cexcept_list_entry *list_entry);
+const char *cexcept_list_entry_get_name(struct cexcept_list_entry *list_entry);
+const char *cexcept_list_entry_get_value(struct cexcept_list_entry *list_entry);
+#define cexcept_list_entry_foreach(list_entry, first_entry) \
         for (list_entry = first_entry; \
              list_entry != NULL; \
-             list_entry = abc_list_entry_get_next(list_entry))
+             list_entry = cexcept_list_entry_get_next(list_entry))
 
 /*
- * abc_thing
+ * cexcept_thing
  *
- * access to things of abc
+ * access to things of cexcept
  */
-struct abc_thing;
-struct abc_thing *abc_thing_ref(struct abc_thing *thing);
-struct abc_thing *abc_thing_unref(struct abc_thing *thing);
-struct abc_ctx *abc_thing_get_ctx(struct abc_thing *thing);
-int abc_thing_new_from_string(struct abc_ctx *ctx, const char *string, struct abc_thing **thing);
-struct abc_list_entry *abc_thing_get_some_list_entry(struct abc_thing *thing);
+struct cexcept_thing;
+struct cexcept_thing *cexcept_thing_ref(struct cexcept_thing *thing);
+struct cexcept_thing *cexcept_thing_unref(struct cexcept_thing *thing);
+struct cexcept_ctx *cexcept_thing_get_ctx(struct cexcept_thing *thing);
+int cexcept_thing_new_from_string(struct cexcept_ctx *ctx, const char *string, struct cexcept_thing **thing);
+struct cexcept_list_entry *cexcept_thing_get_some_list_entry(struct cexcept_thing *thing);
 
 #ifdef __cplusplus
 } /* extern "C" */

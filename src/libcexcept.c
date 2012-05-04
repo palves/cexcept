@@ -1,5 +1,5 @@
 /*
-  abc - something with abc
+  cexcept - something with cexcept
 
   Copyright (C) 2011 Someone <someone@example.com>
 
@@ -27,32 +27,32 @@
 #include <string.h>
 #include <ctype.h>
 
-#include <abc/libabc.h>
-#include "libabc-private.h"
+#include <cexcept/libcexcept.h>
+#include "libcexcept-private.h"
 
 /**
- * SECTION:libabc
- * @short_description: libabc context
+ * SECTION:libcexcept
+ * @short_description: libcexcept context
  *
  * The context contains the default values for the library user,
  * and is passed to all library operations.
  */
 
 /**
- * abc_ctx:
+ * cexcept_ctx:
  *
  * Opaque object representing the library context.
  */
-struct abc_ctx {
+struct cexcept_ctx {
         int refcount;
-        void (*log_fn)(struct abc_ctx *ctx,
+        void (*log_fn)(struct cexcept_ctx *ctx,
                        int priority, const char *file, int line, const char *fn,
                        const char *format, va_list args);
         void *userdata;
         int log_priority;
 };
 
-void abc_log(struct abc_ctx *ctx,
+void cexcept_log(struct cexcept_ctx *ctx,
            int priority, const char *file, int line, const char *fn,
            const char *format, ...)
 {
@@ -63,24 +63,24 @@ void abc_log(struct abc_ctx *ctx,
         va_end(args);
 }
 
-static void log_stderr(struct abc_ctx *ctx,
+static void log_stderr(struct cexcept_ctx *ctx,
                        int priority, const char *file, int line, const char *fn,
                        const char *format, va_list args)
 {
-        fprintf(stderr, "libabc: %s: ", fn);
+        fprintf(stderr, "libcexcept: %s: ", fn);
         vfprintf(stderr, format, args);
 }
 
 /**
- * abc_get_userdata:
- * @ctx: abc library context
+ * cexcept_get_userdata:
+ * @ctx: cexcept library context
  *
  * Retrieve stored data pointer from library context. This might be useful
  * to access from callbacks like a custom logging function.
  *
  * Returns: stored userdata
  **/
-ABC_EXPORT void *abc_get_userdata(struct abc_ctx *ctx)
+CEXCEPT_EXPORT void *cexcept_get_userdata(struct cexcept_ctx *ctx)
 {
         if (ctx == NULL)
                 return NULL;
@@ -88,13 +88,13 @@ ABC_EXPORT void *abc_get_userdata(struct abc_ctx *ctx)
 }
 
 /**
- * abc_set_userdata:
- * @ctx: abc library context
+ * cexcept_set_userdata:
+ * @ctx: cexcept library context
  * @userdata: data pointer
  *
  * Store custom @userdata in the library context.
  **/
-ABC_EXPORT void abc_set_userdata(struct abc_ctx *ctx, void *userdata)
+CEXCEPT_EXPORT void cexcept_set_userdata(struct cexcept_ctx *ctx, void *userdata)
 {
         if (ctx == NULL)
                 return;
@@ -119,22 +119,22 @@ static int log_priority(const char *priority)
 }
 
 /**
- * abc_new:
+ * cexcept_new:
  *
- * Create abc library context. This reads the abc configuration
+ * Create cexcept library context. This reads the cexcept configuration
  * and fills in the default values.
  *
  * The initial refcount is 1, and needs to be decremented to
- * release the resources of the abc library context.
+ * release the resources of the cexcept library context.
  *
- * Returns: a new abc library context
+ * Returns: a new cexcept library context
  **/
-ABC_EXPORT int abc_new(struct abc_ctx **ctx)
+CEXCEPT_EXPORT int cexcept_new(struct cexcept_ctx **ctx)
 {
         const char *env;
-        struct abc_ctx *c;
+        struct cexcept_ctx *c;
 
-        c = calloc(1, sizeof(struct abc_ctx));
+        c = calloc(1, sizeof(struct cexcept_ctx));
         if (!c)
                 return -ENOMEM;
 
@@ -143,9 +143,9 @@ ABC_EXPORT int abc_new(struct abc_ctx **ctx)
         c->log_priority = LOG_ERR;
 
         /* environment overwrites config */
-        env = getenv("ABC_LOG");
+        env = getenv("CEXCEPT_LOG");
         if (env != NULL)
-                abc_set_log_priority(c, log_priority(env));
+                cexcept_set_log_priority(c, log_priority(env));
 
         info(c, "ctx %p created\n", c);
         dbg(c, "log_priority=%d\n", c->log_priority);
@@ -154,14 +154,14 @@ ABC_EXPORT int abc_new(struct abc_ctx **ctx)
 }
 
 /**
- * abc_ref:
- * @ctx: abc library context
+ * cexcept_ref:
+ * @ctx: cexcept library context
  *
- * Take a reference of the abc library context.
+ * Take a reference of the cexcept library context.
  *
- * Returns: the passed abc library context
+ * Returns: the passed cexcept library context
  **/
-ABC_EXPORT struct abc_ctx *abc_ref(struct abc_ctx *ctx)
+CEXCEPT_EXPORT struct cexcept_ctx *cexcept_ref(struct cexcept_ctx *ctx)
 {
         if (ctx == NULL)
                 return NULL;
@@ -170,14 +170,14 @@ ABC_EXPORT struct abc_ctx *abc_ref(struct abc_ctx *ctx)
 }
 
 /**
- * abc_unref:
- * @ctx: abc library context
+ * cexcept_unref:
+ * @ctx: cexcept library context
  *
- * Drop a reference of the abc library context. If the refcount
+ * Drop a reference of the cexcept library context. If the refcount
  * reaches zero, the resources of the context will be released.
  *
  **/
-ABC_EXPORT struct abc_ctx *abc_unref(struct abc_ctx *ctx)
+CEXCEPT_EXPORT struct cexcept_ctx *cexcept_unref(struct cexcept_ctx *ctx)
 {
         if (ctx == NULL)
                 return NULL;
@@ -190,8 +190,8 @@ ABC_EXPORT struct abc_ctx *abc_unref(struct abc_ctx *ctx)
 }
 
 /**
- * abc_set_log_fn:
- * @ctx: abc library context
+ * cexcept_set_log_fn:
+ * @ctx: cexcept library context
  * @log_fn: function to be called for logging messages
  *
  * The built-in logging writes to stderr. It can be
@@ -199,8 +199,8 @@ ABC_EXPORT struct abc_ctx *abc_unref(struct abc_ctx *ctx)
  * into the user's logging functionality.
  *
  **/
-ABC_EXPORT void abc_set_log_fn(struct abc_ctx *ctx,
-                              void (*log_fn)(struct abc_ctx *ctx,
+CEXCEPT_EXPORT void cexcept_set_log_fn(struct cexcept_ctx *ctx,
+                              void (*log_fn)(struct cexcept_ctx *ctx,
                                              int priority, const char *file,
                                              int line, const char *fn,
                                              const char *format, va_list args))
@@ -210,40 +210,40 @@ ABC_EXPORT void abc_set_log_fn(struct abc_ctx *ctx,
 }
 
 /**
- * abc_get_log_priority:
- * @ctx: abc library context
+ * cexcept_get_log_priority:
+ * @ctx: cexcept library context
  *
  * Returns: the current logging priority
  **/
-ABC_EXPORT int abc_get_log_priority(struct abc_ctx *ctx)
+CEXCEPT_EXPORT int cexcept_get_log_priority(struct cexcept_ctx *ctx)
 {
         return ctx->log_priority;
 }
 
 /**
- * abc_set_log_priority:
- * @ctx: abc library context
+ * cexcept_set_log_priority:
+ * @ctx: cexcept library context
  * @priority: the new logging priority
  *
  * Set the current logging priority. The value controls which messages
  * are logged.
  **/
-ABC_EXPORT void abc_set_log_priority(struct abc_ctx *ctx, int priority)
+CEXCEPT_EXPORT void cexcept_set_log_priority(struct cexcept_ctx *ctx, int priority)
 {
         ctx->log_priority = priority;
 }
 
-struct abc_list_entry;
-struct abc_list_entry *abc_list_entry_get_next(struct abc_list_entry *list_entry);
-const char *abc_list_entry_get_name(struct abc_list_entry *list_entry);
-const char *abc_list_entry_get_value(struct abc_list_entry *list_entry);
+struct cexcept_list_entry;
+struct cexcept_list_entry *cexcept_list_entry_get_next(struct cexcept_list_entry *list_entry);
+const char *cexcept_list_entry_get_name(struct cexcept_list_entry *list_entry);
+const char *cexcept_list_entry_get_value(struct cexcept_list_entry *list_entry);
 
-struct abc_thing {
-        struct abc_ctx *ctx;
+struct cexcept_thing {
+        struct cexcept_ctx *ctx;
         int refcount;
 };
 
-ABC_EXPORT struct abc_thing *abc_thing_ref(struct abc_thing *thing)
+CEXCEPT_EXPORT struct cexcept_thing *cexcept_thing_ref(struct cexcept_thing *thing)
 {
         if (!thing)
                 return NULL;
@@ -251,7 +251,7 @@ ABC_EXPORT struct abc_thing *abc_thing_ref(struct abc_thing *thing)
         return thing;
 }
 
-ABC_EXPORT struct abc_thing *abc_thing_unref(struct abc_thing *thing)
+CEXCEPT_EXPORT struct cexcept_thing *cexcept_thing_unref(struct cexcept_thing *thing)
 {
         if (thing == NULL)
                 return NULL;
@@ -263,16 +263,16 @@ ABC_EXPORT struct abc_thing *abc_thing_unref(struct abc_thing *thing)
         return NULL;
 }
 
-ABC_EXPORT struct abc_ctx *abc_thing_get_ctx(struct abc_thing *thing)
+CEXCEPT_EXPORT struct cexcept_ctx *cexcept_thing_get_ctx(struct cexcept_thing *thing)
 {
         return thing->ctx;
 }
 
-ABC_EXPORT int abc_thing_new_from_string(struct abc_ctx *ctx, const char *string, struct abc_thing **thing)
+CEXCEPT_EXPORT int cexcept_thing_new_from_string(struct cexcept_ctx *ctx, const char *string, struct cexcept_thing **thing)
 {
-        struct abc_thing *t;
+        struct cexcept_thing *t;
 
-        t = calloc(1, sizeof(struct abc_thing));
+        t = calloc(1, sizeof(struct cexcept_thing));
         if (!t)
                 return -ENOMEM;
 
@@ -282,7 +282,7 @@ ABC_EXPORT int abc_thing_new_from_string(struct abc_ctx *ctx, const char *string
         return 0;
 }
 
-ABC_EXPORT struct abc_list_entry *abc_thing_get_some_list_entry(struct abc_thing *thing)
+CEXCEPT_EXPORT struct cexcept_list_entry *cexcept_thing_get_some_list_entry(struct cexcept_thing *thing)
 {
         return NULL;
 }

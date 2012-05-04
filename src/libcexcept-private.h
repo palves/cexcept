@@ -1,5 +1,5 @@
 /*
-  libabc - something with abc
+  libcexcept - something with cexcept
 
   Copyright (C) 2011 Someone <someone@example.com>
 
@@ -18,40 +18,40 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef _LIBABC_PRIVATE_H_
-#define _LIBABC_PRIVATE_H_
+#ifndef _LIBCEXCEPT_PRIVATE_H_
+#define _LIBCEXCEPT_PRIVATE_H_
 
 #include <stdbool.h>
 #include <syslog.h>
 
-#include <abc/libabc.h>
+#include <cexcept/libcexcept.h>
 
 static inline void __attribute__((always_inline, format(printf, 2, 3)))
-abc_log_null(struct abc_ctx *ctx, const char *format, ...) {}
+cexcept_log_null(struct cexcept_ctx *ctx, const char *format, ...) {}
 
-#define abc_log_cond(ctx, prio, arg...) \
+#define cexcept_log_cond(ctx, prio, arg...) \
   do { \
-    if (abc_get_log_priority(ctx) >= prio) \
-      abc_log(ctx, prio, __FILE__, __LINE__, __FUNCTION__, ## arg); \
+    if (cexcept_get_log_priority(ctx) >= prio) \
+      cexcept_log(ctx, prio, __FILE__, __LINE__, __FUNCTION__, ## arg); \
   } while (0)
 
 #ifdef ENABLE_LOGGING
 #  ifdef ENABLE_DEBUG
-#    define dbg(ctx, arg...) abc_log_cond(ctx, LOG_DEBUG, ## arg)
+#    define dbg(ctx, arg...) cexcept_log_cond(ctx, LOG_DEBUG, ## arg)
 #  else
-#    define dbg(ctx, arg...) abc_log_null(ctx, ## arg)
+#    define dbg(ctx, arg...) cexcept_log_null(ctx, ## arg)
 #  endif
-#  define info(ctx, arg...) abc_log_cond(ctx, LOG_INFO, ## arg)
-#  define err(ctx, arg...) abc_log_cond(ctx, LOG_ERR, ## arg)
+#  define info(ctx, arg...) cexcept_log_cond(ctx, LOG_INFO, ## arg)
+#  define err(ctx, arg...) cexcept_log_cond(ctx, LOG_ERR, ## arg)
 #else
-#  define dbg(ctx, arg...) abc_log_null(ctx, ## arg)
-#  define info(ctx, arg...) abc_log_null(ctx, ## arg)
-#  define err(ctx, arg...) abc_log_null(ctx, ## arg)
+#  define dbg(ctx, arg...) cexcept_log_null(ctx, ## arg)
+#  define info(ctx, arg...) cexcept_log_null(ctx, ## arg)
+#  define err(ctx, arg...) cexcept_log_null(ctx, ## arg)
 #endif
 
-#define ABC_EXPORT __attribute__ ((visibility("default")))
+#define CEXCEPT_EXPORT __attribute__ ((visibility("default")))
 
-void abc_log(struct abc_ctx *ctx,
+void cexcept_log(struct cexcept_ctx *ctx,
            int priority, const char *file, int line, const char *fn,
            const char *format, ...)
            __attribute__((format(printf, 6, 7)));
