@@ -250,7 +250,7 @@ static char **exception_messages;
 static int exception_messages_size;
 
 static void ATTRIBUTE_NORETURN ATTRIBUTE_PRINTF (3, 0)
-throw_it (enum return_reason reason, int error, const char *fmt,
+throw_it (enum cexcept_return_reason reason, int error, const char *fmt,
 	  va_list ap)
 {
   struct cexception e;

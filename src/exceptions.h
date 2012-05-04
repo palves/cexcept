@@ -33,7 +33,7 @@
    catch_exceptions reserves values >= 0 as valid results from its
    wrapped function.  */
 
-enum return_reason
+enum cexcept_return_reason
   {
     /* User interrupt.  */
     RETURN_QUIT = -2,
@@ -53,7 +53,7 @@ typedef int return_mask;
 
 struct cexception
 {
-  enum return_reason reason;
+  enum cexcept_return_reason reason;
   int error;
   const char *message;
 };
