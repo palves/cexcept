@@ -101,14 +101,14 @@ int cexcept_state_mc_action_iter_1 (void);
 
   */
 
-#define TRY_CATCH(EXCEPTION,MASK) \
-     { \
-       CEXCEPT_SIGJMP_BUF *buf = \
-	 cexcept_state_mc_init (&(EXCEPTION), (MASK)); \
-       CEXCEPT_SIGSETJMP (*buf); \
-     } \
-     while (cexcept_state_mc_action_iter ()) \
-       while (cexcept_state_mc_action_iter_1 ())
+#define CEXCEPT_TRY(EXCEPTION, MASK)		       \
+  {						       \
+    CEXCEPT_SIGJMP_BUF *buf =			       \
+      cexcept_state_mc_init (&(EXCEPTION), (MASK));    \
+    CEXCEPT_SIGSETJMP (*buf);			       \
+  }						       \
+  while (cexcept_state_mc_action_iter ())	       \
+    while (cexcept_state_mc_action_iter_1 ())
 
 /* *INDENT-ON* */
 
