@@ -197,7 +197,7 @@ exceptions_state_mc (enum catcher_action action)
 	       relay the event to the next containing
 	       catch_errors().  */
 	    catcher_pop ();
-	    throw_exception (exception);
+	    cexcept_throw (exception);
 	  }
 	default:
 	  internal_error ("bad state");
@@ -219,10 +219,10 @@ exceptions_state_mc_action_iter_1 (void)
   return exceptions_state_mc (CATCH_ITER_1);
 }
 
-/* Return EXCEPTION to the nearest containing catch_errors().  */
+/* Return EXCEPTION to the nearest containing TRY_CATCH.  */
 
 void
-throw_exception (struct cexception exception)
+cexcept_throw (struct cexception exception)
 {
   do_cleanups (all_cleanups ());
 
@@ -283,23 +283,23 @@ throw_it (enum cexcept_return_reason reason, int error, const char *fmt,
   e.message = new_message;
 
   /* Throw the exception.  */
-  throw_exception (e);
+  cexcept_throw (e);
 }
 
 void
-throw_verror (int error, const char *fmt, va_list ap)
+cexcept_throw_verror (int error, const char *fmt, va_list ap)
 {
   throw_it (RETURN_ERROR, error, fmt, ap);
 }
 
 void
-throw_vfatal (const char *fmt, va_list ap)
+cexcept_throw_vfatal (const char *fmt, va_list ap)
 {
   throw_it (RETURN_QUIT, CEXCEPT_NO_ERROR, fmt, ap);
 }
 
 void
-throw_error (int error, const char *fmt, ...)
+cexcept_throw_error (int error, const char *fmt, ...)
 {
   va_list args;
 

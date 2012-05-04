@@ -123,13 +123,13 @@ int exceptions_state_mc_action_iter_1 (void);
    be a good thing or a dangerous thing.'' -- the Existential
    Wombat.  */
 
-extern void throw_exception (struct cexception exception)
+extern void cexcept_throw (struct cexception exception)
      ATTRIBUTE_NORETURN;
-extern void throw_verror (int error, const char *fmt, va_list ap)
+extern void cexcept_throw_verror (int error, const char *fmt, va_list ap)
      ATTRIBUTE_NORETURN ATTRIBUTE_PRINTF (2, 0);
-extern void throw_vfatal (const char *fmt, va_list ap)
+extern void cexcept_throw_vfatal (const char *fmt, va_list ap)
      ATTRIBUTE_NORETURN ATTRIBUTE_PRINTF (1, 0);
-extern void throw_error (int error, const char *fmt, ...)
+extern void cexcept_throw_error (int error, const char *fmt, ...)
      ATTRIBUTE_NORETURN ATTRIBUTE_PRINTF (2, 3);
 
 #endif
