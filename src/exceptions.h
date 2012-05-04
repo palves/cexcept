@@ -73,9 +73,9 @@ struct cexception
 
 /* Functions to drive the exceptions state m/c (internal to
    exceptions).  */
-CEXCEPT_SIGJMP_BUF *cexcept_state_mc_init (volatile struct
-					      cexception *exception,
-					      return_mask mask);
+CEXCEPT_SIGJMP_BUF *cexcept_state_mc_init
+  (volatile struct cexception *exception,
+   return_mask mask);
 int cexcept_state_mc_action_iter (void);
 int cexcept_state_mc_action_iter_1 (void);
 
