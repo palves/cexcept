@@ -20,9 +20,10 @@
 #ifndef CEXCEPT_H
 #define CEXCEPT_H
 
+#include "cexcept/priv/ansidecl.h"
+
 #include <setjmp.h>
 #include <stdarg.h>
-#include "ansidecl.h"
 
 /* Reasons for calling throw_exception.  NOTE: all reason values must
    be less than zero.  enum value 0 is reserved for internal use as
