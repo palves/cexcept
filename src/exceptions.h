@@ -22,10 +22,7 @@
 
 #include <setjmp.h>
 #include <stdarg.h>
-
-/* FIXME */
-#define ATTRIBUTE_NORETURN
-#define ATTRIBUTE_PRINTF(a, b)
+#include "ansidecl.h"
 
 /* Reasons for calling throw_exception.  NOTE: all reason values must
    be less than zero.  enum value 0 is reserved for internal use as
