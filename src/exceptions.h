@@ -27,9 +27,7 @@
 
 /* Reasons for calling throw_exception.  NOTE: all reason values must
    be less than zero.  enum value 0 is reserved for internal use as
-   the return value from an initial setjmp.  The function
-   catch_exceptions reserves values >= 0 as valid results from its
-   wrapped function.  */
+   the return value from an initial setjmp.  */
 
 enum cexcept_return_reason
   {
@@ -89,7 +87,7 @@ int cexcept_state_mc_action_iter_1 (void);
    *INDENT-OFF*
 
    volatile struct cexception e;
-   TRY_CATCH (e, RETURN_MASK_ERROR)
+   CEXCEPT_TRY (e, RETURN_MASK_ERROR)
      {
      }
    switch (e.reason)
@@ -112,14 +110,7 @@ int cexcept_state_mc_action_iter_1 (void);
 
 /* Throw an exception (as described by "struct cexception").  Will
    execute a LONG JUMP to the inner most containing exception handler
-   established using catch_exceptions() (or similar).
-
-   Code normally throws an exception using error() et.al.  For various
-   reaons, GDB also contains code that throws an exception directly.
-   For instance, the remote*.c targets contain CNTRL-C signal handlers
-   that propogate the QUIT event up the exception chain.  ``This could
-   be a good thing or a dangerous thing.'' -- the Existential
-   Wombat.  */
+   established using CEXCEPT_TRY (or similar).  */
 
 extern void cexcept_throw (struct cexception exception)
      ATTRIBUTE_NORETURN;
