@@ -35,7 +35,12 @@ LIBCEXCEPT_CURRENT=2
 LIBCEXCEPT_REVISION=0
 LIBCEXCEPT_AGE=2
 
-pkginclude_HEADERS = src/cexcept/libcexcept.h
+pkginclude_HEADERS = \
+	src/cexcept/cleanups.h \
+	src/cexcept/exceptions.h \
+	src/cexcept/errors.h \
+	src/cexcept/libcexcept.h
+
 lib_LTLIBRARIES = src/libcexcept.la
 
 src_libcexcept_la_SOURCES =\
