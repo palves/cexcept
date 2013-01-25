@@ -33,6 +33,7 @@
    is executed and when it's discarded.  */
 
 #include "cleanups.h"
+#include "libcexcept-private.h"
 
 #include <stdlib.h>
 #include <assert.h>
@@ -115,7 +116,7 @@ make_my_cleanup (struct cleanup **pmy_chain, make_cleanup_ftype *function,
    to be passed later to do_cleanups or discard_cleanups.
    Args are FUNCTION to clean up with, and ARG to pass to it.  */
 
-struct cleanup *
+CEXCEPT_EXPORT struct cleanup *
 make_cleanup (make_cleanup_ftype *function, void *arg)
 {
   return make_my_cleanup (&cleanup_chain, function, arg);
@@ -124,7 +125,7 @@ make_cleanup (make_cleanup_ftype *function, void *arg)
 /* Same as make_cleanup except also includes TDOR, a destructor to free ARG.
    DTOR is invoked when the cleanup is performed or when it is discarded.  */
 
-struct cleanup *
+CEXCEPT_EXPORT struct cleanup *
 make_cleanup_dtor (make_cleanup_ftype *function, void *arg,
 		   void (*dtor) (void *))
 {
@@ -134,7 +135,7 @@ make_cleanup_dtor (make_cleanup_ftype *function, void *arg,
 
 /* Same as make_cleanup except the cleanup is added to final_cleanup_chain.  */
 
-struct cleanup *
+CEXCEPT_EXPORT struct cleanup *
 make_final_cleanup (make_cleanup_ftype *function, void *arg)
 {
   return make_my_cleanup (&final_cleanup_chain, function, arg);
@@ -164,7 +165,7 @@ do_my_cleanups (struct cleanup **pmy_chain,
 /* Return a value that can be passed to do_cleanups, do_final_cleanups to
    indicate perform all cleanups.  */
 
-struct cleanup *
+CEXCEPT_EXPORT struct cleanup *
 all_cleanups (void)
 {
   return SENTINEL_CLEANUP;
@@ -173,7 +174,7 @@ all_cleanups (void)
 /* Discard cleanups and do the actions they describe
    until we get back to the point OLD_CHAIN in the cleanup_chain.  */
 
-void
+CEXCEPT_EXPORT void
 do_cleanups (struct cleanup *old_chain)
 {
   do_my_cleanups (&cleanup_chain, old_chain);
@@ -182,7 +183,7 @@ do_cleanups (struct cleanup *old_chain)
 /* Discard cleanups and do the actions they describe
    until we get back to the point OLD_CHAIN in the final_cleanup_chain.  */
 
-void
+CEXCEPT_EXPORT void
 do_final_cleanups (struct cleanup *old_chain)
 {
   do_my_cleanups (&final_cleanup_chain, old_chain);
@@ -211,7 +212,7 @@ discard_my_cleanups (struct cleanup **pmy_chain,
 /* Discard cleanups, not doing the actions they describe,
    until we get back to the point OLD_CHAIN in the cleanup chain.  */
 
-void
+CEXCEPT_EXPORT void
 discard_cleanups (struct cleanup *old_chain)
 {
   discard_my_cleanups (&cleanup_chain, old_chain);
@@ -220,7 +221,7 @@ discard_cleanups (struct cleanup *old_chain)
 /* Discard final cleanups, not doing the actions they describe,
    until we get back to the point OLD_CHAIN in the final cleanup chain.  */
 
-void
+CEXCEPT_EXPORT void
 discard_final_cleanups (struct cleanup *old_chain)
 {
   discard_my_cleanups (&final_cleanup_chain, old_chain);
@@ -241,7 +242,7 @@ save_my_cleanups (struct cleanup **pmy_chain)
 
 /* Set the cleanup_chain to 0, and return the old cleanup_chain.  */
 
-struct cleanup *
+CEXCEPT_EXPORT struct cleanup *
 save_cleanups (void)
 {
   return save_my_cleanups (&cleanup_chain);
@@ -250,7 +251,7 @@ save_cleanups (void)
 /* Set the final_cleanup_chain to 0, and return the old
    final_cleanup_chain.  */
 
-struct cleanup *
+CEXCEPT_EXPORT struct cleanup *
 save_final_cleanups (void)
 {
   return save_my_cleanups (&final_cleanup_chain);
@@ -268,7 +269,7 @@ restore_my_cleanups (struct cleanup **pmy_chain, struct cleanup *chain)
 
 /* Restore the cleanup chain from a previously saved chain.  */
 
-void
+CEXCEPT_EXPORT void
 restore_cleanups (struct cleanup *chain)
 {
   restore_my_cleanups (&cleanup_chain, chain);
@@ -276,7 +277,7 @@ restore_cleanups (struct cleanup *chain)
 
 /* Restore the final cleanup chain from a previously saved chain.  */
 
-void
+CEXCEPT_EXPORT void
 restore_final_cleanups (struct cleanup *chain)
 {
   restore_my_cleanups (&final_cleanup_chain, chain);
@@ -289,7 +290,7 @@ restore_final_cleanups (struct cleanup *chain)
    In such cases, we may not be certain where the first cleanup is, unless
    we have a do-nothing one to always use as the base.  */
 
-void
+CEXCEPT_EXPORT void
 null_cleanup (void *arg)
 {
 }

@@ -27,6 +27,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "libcexcept-private.h"
+
 #define internal_error(STR) \
   assert (0)
 
@@ -85,7 +87,7 @@ catcher_list_size (void)
 
 #define XZALLOC(TYPE) ((TYPE *) calloc (1, sizeof (TYPE)))
 
-CEXCEPT_SIGJMP_BUF *
+CEXCEPT_EXPORT CEXCEPT_SIGJMP_BUF *
 cexcept_state_mc_init (volatile struct cexception *exception,
 		       return_mask mask)
 {
@@ -207,13 +209,13 @@ cexcept_state_mc (enum catcher_action action)
     }
 }
 
-int
+CEXCEPT_EXPORT int
 cexcept_state_mc_action_iter (void)
 {
   return cexcept_state_mc (CATCH_ITER);
 }
 
-int
+CEXCEPT_EXPORT int
 cexcept_state_mc_action_iter_1 (void)
 {
   return cexcept_state_mc (CATCH_ITER_1);
@@ -221,7 +223,7 @@ cexcept_state_mc_action_iter_1 (void)
 
 /* Return EXCEPTION to the nearest containing TRY_CATCH.  */
 
-void
+CEXCEPT_EXPORT void
 cexcept_throw (struct cexception exception)
 {
   do_cleanups (all_cleanups ());
@@ -286,19 +288,19 @@ throw_it (enum cexcept_return_reason reason, int error, const char *fmt,
   cexcept_throw (e);
 }
 
-void
+CEXCEPT_EXPORT void
 cexcept_throw_verror (int error, const char *fmt, va_list ap)
 {
   throw_it (RETURN_ERROR, error, fmt, ap);
 }
 
-void
+CEXCEPT_EXPORT void
 cexcept_throw_vfatal (const char *fmt, va_list ap)
 {
   throw_it (RETURN_QUIT, CEXCEPT_NO_ERROR, fmt, ap);
 }
 
-void
+CEXCEPT_EXPORT void
 cexcept_throw_error (int error, const char *fmt, ...)
 {
   va_list args;
