@@ -40,7 +40,6 @@ lib_LTLIBRARIES = src/libcexcept.la
 
 src_libcexcept_la_SOURCES =\
 	src/libcexcept-private.h \
-	src/libcexcept.c \
 	src/cleanups.c \
 	src/exceptions.c
 
