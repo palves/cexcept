@@ -41,24 +41,6 @@ void cexcept_set_log_fn(struct cexcept_ctx *ctx,
                   void (*log_fn)(struct cexcept_ctx *ctx,
                                  int priority, const char *file, int line, const char *fn,
                                  const char *format, va_list args));
-int cexcept_get_log_priority(struct cexcept_ctx *ctx);
-void cexcept_set_log_priority(struct cexcept_ctx *ctx, int priority);
-void *cexcept_get_userdata(struct cexcept_ctx *ctx);
-void cexcept_set_userdata(struct cexcept_ctx *ctx, void *userdata);
-
-/*
- * cexcept_list
- *
- * access to cexcept generated lists
- */
-struct cexcept_list_entry;
-struct cexcept_list_entry *cexcept_list_entry_get_next(struct cexcept_list_entry *list_entry);
-const char *cexcept_list_entry_get_name(struct cexcept_list_entry *list_entry);
-const char *cexcept_list_entry_get_value(struct cexcept_list_entry *list_entry);
-#define cexcept_list_entry_foreach(list_entry, first_entry) \
-        for (list_entry = first_entry; \
-             list_entry != NULL; \
-             list_entry = cexcept_list_entry_get_next(list_entry))
 
 /*
  * cexcept_thing
