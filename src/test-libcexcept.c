@@ -24,24 +24,17 @@
 #include <errno.h>
 #include <unistd.h>
 
-#include <abc/libabc.h>
+#include <cexcept/libcexcept.h>
 
-int main(int argc, char *argv[])
+int
+main (int argc, char *argv[])
 {
-        struct abc_ctx *ctx;
-        struct abc_thing *thing = NULL;
-        int err;
+  struct cleanup *old_chain;
+  int *a;
 
-        err = abc_new(&ctx);
-        if (err < 0)
-                exit(EXIT_FAILURE);
+  a = malloc (10);
+  old_chain = make_cleanup (free, a);
 
-        printf("version %s\n", VERSION);
-
-        err = abc_thing_new_from_string(ctx, "foo", &thing);
-        if (err >= 0)
-                abc_thing_unref(thing);
-
-        abc_unref(ctx);
-        return EXIT_SUCCESS;
+  do_cleanups (old_chain);
+  return EXIT_SUCCESS;
 }
