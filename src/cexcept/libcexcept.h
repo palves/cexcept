@@ -20,6 +20,5 @@
 
 #include "cexcept/exceptions.h"
 #include "cexcept/cleanups.h"
-#include "cexcept/errors.h"
 
 #endif

@@ -38,7 +38,6 @@ LIBCEXCEPT_AGE=0
 pkginclude_HEADERS = \
 	src/cexcept/cleanups.h \
 	src/cexcept/exceptions.h \
-	src/cexcept/errors.h \
 	src/cexcept/libcexcept.h
 
 lib_LTLIBRARIES = src/libcexcept.la
@@ -63,5 +62,5 @@ CLEANFILES += src/libcexcept.pc
 TESTS = src/test-libcexcept
 
 check_PROGRAMS = src/test-libcexcept
-src_test_libcexcept_SOURCES = src/test-libcexcept.c
+src_test_libcexcept_SOURCES = src/test-libcexcept.c src/test-libcexcept.h
 src_test_libcexcept_LDADD = src/libcexcept.la

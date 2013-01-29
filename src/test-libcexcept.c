@@ -35,6 +35,9 @@
 #define do_cleanups cexcept_do_cleanups
 #define discard_cleanups cexcept_discard_cleanups
 
+/* Pull in application specific errors.  */
+#include "test-libcexcept.h"
+
 /* Helper function which does the work for make_cleanup_fclose.  */
 
 static void
