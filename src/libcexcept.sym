@@ -1,18 +1,18 @@
 LIBCEXCEPT_0.0 {
 global:
-	all_cleanups;
-	discard_cleanups;
-	discard_final_cleanups;
-	do_cleanups;
-	do_final_cleanups;
-	make_cleanup;
-	make_cleanup_dtor;
-	make_final_cleanup;
-	null_cleanup;
-	restore_cleanups;
-	restore_final_cleanups;
-	save_cleanups;
-	save_final_cleanups;
+	cexcept_all_cleanups;
+	cexcept_discard_cleanups;
+	cexcept_discard_final_cleanups;
+	cexcept_do_cleanups;
+	cexcept_do_final_cleanups;
+	cexcept_make_cleanup;
+	cexcept_make_cleanup_dtor;
+	cexcept_make_final_cleanup;
+	cexcept_null_cleanup;
+	cexcept_restore_cleanups;
+	cexcept_restore_final_cleanups;
+	cexcept_save_cleanups;
+	cexcept_save_final_cleanups;
 	cexcept_state_mc_action_iter;
 	cexcept_state_mc_action_iter_1;
 	cexcept_state_mc_init;

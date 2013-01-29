@@ -30,6 +30,10 @@
 /* Convenience aliases.  You'd do these project-wide.  */
 #define TRY_CATCH CEXCEPT_TRY
 #define throw_error cexcept_throw_error
+#define make_cleanup cexcept_make_cleanup
+#define cleanup cexcept_cleanup
+#define do_cleanups cexcept_do_cleanups
+#define discard_cleanups cexcept_discard_cleanups
 
 /* Helper function which does the work for make_cleanup_fclose.  */
 
@@ -43,7 +47,7 @@ do_fclose_cleanup (void *arg)
 
 /* Return a new cleanup that closes FILE.  */
 
-static struct cleanup *
+static struct cexcept_cleanup *
 make_cleanup_fclose (FILE *file)
 {
   return make_cleanup (do_fclose_cleanup, file);

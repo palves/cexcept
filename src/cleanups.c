@@ -38,9 +38,9 @@
 #include <stdlib.h>
 #include <assert.h>
 
-struct cleanup
+struct cexcept_cleanup
 {
-  struct cleanup *next;
+  struct cexcept_cleanup *next;
   void (*function) (void *);
   void (*free_arg) (void *);
   void *arg;
@@ -56,18 +56,18 @@ struct cleanup
    This is const for a bit of extra robustness.
    It is initialized to coax gcc into putting it into .rodata.
    All fields are initialized to survive -Wextra.  */
-static const struct cleanup sentinel_cleanup = { 0, 0, 0, 0 };
+static const struct cexcept_cleanup sentinel_cleanup = { 0, 0, 0, 0 };
 
 /* Handy macro to use when referring to sentinel_cleanup.  */
-#define SENTINEL_CLEANUP ((struct cleanup *) &sentinel_cleanup)
+#define SENTINEL_CLEANUP ((struct cexcept_cleanup *) &sentinel_cleanup)
 
 /* Chain of cleanup actions established with make_cleanup,
    to be executed if an error happens.  */
-static struct cleanup *cleanup_chain = SENTINEL_CLEANUP;
+static struct cexcept_cleanup *cleanup_chain = SENTINEL_CLEANUP;
 
 /* Chain of cleanup actions established with make_final_cleanup,
    to be executed when gdb exits.  */
-static struct cleanup *final_cleanup_chain = SENTINEL_CLEANUP;
+static struct cexcept_cleanup *final_cleanup_chain = SENTINEL_CLEANUP;
 
 /* Main worker routine to create a cleanup.
    PMY_CHAIN is a pointer to either cleanup_chain or final_cleanup_chain.
@@ -78,13 +78,14 @@ static struct cleanup *final_cleanup_chain = SENTINEL_CLEANUP;
    The result is a pointer to the previous chain pointer
    to be passed later to do_cleanups or discard_cleanups.  */
 
-static struct cleanup *
-make_my_cleanup2 (struct cleanup **pmy_chain, make_cleanup_ftype *function,
+static struct cexcept_cleanup *
+make_my_cleanup2 (struct cexcept_cleanup **pmy_chain,
+		  cexcept_make_cleanup_ftype *function,
 		  void *arg,  void (*free_arg) (void *))
 {
-  struct cleanup *new
-    = (struct cleanup *) malloc (sizeof (struct cleanup));
-  struct cleanup *old_chain = *pmy_chain;
+  struct cexcept_cleanup *new
+    = (struct cexcept_cleanup *) malloc (sizeof (struct cexcept_cleanup));
+  struct cexcept_cleanup *old_chain = *pmy_chain;
 
   new->next = *pmy_chain;
   new->function = function;
@@ -104,8 +105,9 @@ make_my_cleanup2 (struct cleanup **pmy_chain, make_cleanup_ftype *function,
    The result is a pointer to the previous chain pointer
    to be passed later to do_cleanups or discard_cleanups.  */
 
-static struct cleanup *
-make_my_cleanup (struct cleanup **pmy_chain, make_cleanup_ftype *function,
+static struct cexcept_cleanup *
+make_my_cleanup (struct cexcept_cleanup **pmy_chain,
+		 cexcept_make_cleanup_ftype *function,
 		 void *arg)
 {
   return make_my_cleanup2 (pmy_chain, function, arg, NULL);
@@ -116,8 +118,8 @@ make_my_cleanup (struct cleanup **pmy_chain, make_cleanup_ftype *function,
    to be passed later to do_cleanups or discard_cleanups.
    Args are FUNCTION to clean up with, and ARG to pass to it.  */
 
-CEXCEPT_EXPORT struct cleanup *
-make_cleanup (make_cleanup_ftype *function, void *arg)
+CEXCEPT_EXPORT struct cexcept_cleanup *
+cexcept_make_cleanup (cexcept_make_cleanup_ftype *function, void *arg)
 {
   return make_my_cleanup (&cleanup_chain, function, arg);
 }
@@ -125,8 +127,8 @@ make_cleanup (make_cleanup_ftype *function, void *arg)
 /* Same as make_cleanup except also includes TDOR, a destructor to free ARG.
    DTOR is invoked when the cleanup is performed or when it is discarded.  */
 
-CEXCEPT_EXPORT struct cleanup *
-make_cleanup_dtor (make_cleanup_ftype *function, void *arg,
+CEXCEPT_EXPORT struct cexcept_cleanup *
+cexcept_make_cleanup_dtor (cexcept_make_cleanup_ftype *function, void *arg,
 		   void (*dtor) (void *))
 {
   return make_my_cleanup2 (&cleanup_chain,
@@ -135,8 +137,8 @@ make_cleanup_dtor (make_cleanup_ftype *function, void *arg,
 
 /* Same as make_cleanup except the cleanup is added to final_cleanup_chain.  */
 
-CEXCEPT_EXPORT struct cleanup *
-make_final_cleanup (make_cleanup_ftype *function, void *arg)
+CEXCEPT_EXPORT struct cexcept_cleanup *
+cexcept_make_final_cleanup (cexcept_make_cleanup_ftype *function, void *arg)
 {
   return make_my_cleanup (&final_cleanup_chain, function, arg);
 }
@@ -147,10 +149,10 @@ make_final_cleanup (make_cleanup_ftype *function, void *arg)
    Cleanups are performed until we get back to the old end of the chain.  */
 
 static void
-do_my_cleanups (struct cleanup **pmy_chain,
-		struct cleanup *old_chain)
+do_my_cleanups (struct cexcept_cleanup **pmy_chain,
+		struct cexcept_cleanup *old_chain)
 {
-  struct cleanup *ptr;
+  struct cexcept_cleanup *ptr;
 
   while ((ptr = *pmy_chain) != old_chain)
     {
@@ -165,8 +167,8 @@ do_my_cleanups (struct cleanup **pmy_chain,
 /* Return a value that can be passed to do_cleanups, do_final_cleanups to
    indicate perform all cleanups.  */
 
-CEXCEPT_EXPORT struct cleanup *
-all_cleanups (void)
+CEXCEPT_EXPORT struct cexcept_cleanup *
+cexcept_all_cleanups (void)
 {
   return SENTINEL_CLEANUP;
 }
@@ -175,7 +177,7 @@ all_cleanups (void)
    until we get back to the point OLD_CHAIN in the cleanup_chain.  */
 
 CEXCEPT_EXPORT void
-do_cleanups (struct cleanup *old_chain)
+cexcept_do_cleanups (struct cexcept_cleanup *old_chain)
 {
   do_my_cleanups (&cleanup_chain, old_chain);
 }
@@ -184,7 +186,7 @@ do_cleanups (struct cleanup *old_chain)
    until we get back to the point OLD_CHAIN in the final_cleanup_chain.  */
 
 CEXCEPT_EXPORT void
-do_final_cleanups (struct cleanup *old_chain)
+cexcept_do_final_cleanups (struct cexcept_cleanup *old_chain)
 {
   do_my_cleanups (&final_cleanup_chain, old_chain);
 }
@@ -195,10 +197,10 @@ do_final_cleanups (struct cleanup *old_chain)
    Cleanups are discarded until we get back to the old end of the chain.  */
 
 static void
-discard_my_cleanups (struct cleanup **pmy_chain,
-		     struct cleanup *old_chain)
+discard_my_cleanups (struct cexcept_cleanup **pmy_chain,
+		     struct cexcept_cleanup *old_chain)
 {
-  struct cleanup *ptr;
+  struct cexcept_cleanup *ptr;
 
   while ((ptr = *pmy_chain) != old_chain)
     {
@@ -213,7 +215,7 @@ discard_my_cleanups (struct cleanup **pmy_chain,
    until we get back to the point OLD_CHAIN in the cleanup chain.  */
 
 CEXCEPT_EXPORT void
-discard_cleanups (struct cleanup *old_chain)
+cexcept_discard_cleanups (struct cexcept_cleanup *old_chain)
 {
   discard_my_cleanups (&cleanup_chain, old_chain);
 }
@@ -222,7 +224,7 @@ discard_cleanups (struct cleanup *old_chain)
    until we get back to the point OLD_CHAIN in the final cleanup chain.  */
 
 CEXCEPT_EXPORT void
-discard_final_cleanups (struct cleanup *old_chain)
+cexcept_discard_final_cleanups (struct cexcept_cleanup *old_chain)
 {
   discard_my_cleanups (&final_cleanup_chain, old_chain);
 }
@@ -231,10 +233,10 @@ discard_final_cleanups (struct cleanup *old_chain)
    PMY_CHAIN is a pointer to either cleanup_chain or final_cleanup_chain.
    The chain is emptied and the result is a pointer to the old chain.  */
 
-static struct cleanup *
-save_my_cleanups (struct cleanup **pmy_chain)
+static struct cexcept_cleanup *
+save_my_cleanups (struct cexcept_cleanup **pmy_chain)
 {
-  struct cleanup *old_chain = *pmy_chain;
+  struct cexcept_cleanup *old_chain = *pmy_chain;
 
   *pmy_chain = SENTINEL_CLEANUP;
   return old_chain;
@@ -242,8 +244,8 @@ save_my_cleanups (struct cleanup **pmy_chain)
 
 /* Set the cleanup_chain to 0, and return the old cleanup_chain.  */
 
-CEXCEPT_EXPORT struct cleanup *
-save_cleanups (void)
+CEXCEPT_EXPORT struct cexcept_cleanup *
+cexcept_save_cleanups (void)
 {
   return save_my_cleanups (&cleanup_chain);
 }
@@ -251,8 +253,8 @@ save_cleanups (void)
 /* Set the final_cleanup_chain to 0, and return the old
    final_cleanup_chain.  */
 
-CEXCEPT_EXPORT struct cleanup *
-save_final_cleanups (void)
+CEXCEPT_EXPORT struct cexcept_cleanup *
+cexcept_save_final_cleanups (void)
 {
   return save_my_cleanups (&final_cleanup_chain);
 }
@@ -262,7 +264,8 @@ save_final_cleanups (void)
    The chain is restored from CHAIN.  */
 
 static void
-restore_my_cleanups (struct cleanup **pmy_chain, struct cleanup *chain)
+restore_my_cleanups (struct cexcept_cleanup **pmy_chain,
+		     struct cexcept_cleanup *chain)
 {
   *pmy_chain = chain;
 }
@@ -270,7 +273,7 @@ restore_my_cleanups (struct cleanup **pmy_chain, struct cleanup *chain)
 /* Restore the cleanup chain from a previously saved chain.  */
 
 CEXCEPT_EXPORT void
-restore_cleanups (struct cleanup *chain)
+cexcept_restore_cleanups (struct cexcept_cleanup *chain)
 {
   restore_my_cleanups (&cleanup_chain, chain);
 }
@@ -278,7 +281,7 @@ restore_cleanups (struct cleanup *chain)
 /* Restore the final cleanup chain from a previously saved chain.  */
 
 CEXCEPT_EXPORT void
-restore_final_cleanups (struct cleanup *chain)
+cexcept_restore_final_cleanups (struct cexcept_cleanup *chain)
 {
   restore_my_cleanups (&final_cleanup_chain, chain);
 }
@@ -291,6 +294,6 @@ restore_final_cleanups (struct cleanup *chain)
    we have a do-nothing one to always use as the base.  */
 
 CEXCEPT_EXPORT void
-null_cleanup (void *arg)
+cexcept_null_cleanup (void *arg)
 {
 }

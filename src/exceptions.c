@@ -61,7 +61,7 @@ struct catcher
   volatile struct cexception *exception;
   /* Saved/current state.  */
   int mask;
-  struct cleanup *saved_cleanup_chain;
+  struct cexcept_cleanup *saved_cleanup_chain;
   /* Back link.  */
   struct catcher *prev;
 };
@@ -103,7 +103,7 @@ cexcept_state_mc_init (volatile struct cexception *exception,
 
   /* Prevent error/quit during FUNC from calling cleanups established
      prior to here.  */
-  new_catcher->saved_cleanup_chain = save_cleanups ();
+  new_catcher->saved_cleanup_chain = cexcept_save_cleanups ();
 
   /* Push this new catcher on the top.  */
   new_catcher->prev = current_catcher;
@@ -123,7 +123,7 @@ catcher_pop (void)
   /* Restore the cleanup chain, the error/quit messages, and the uiout
      builder, to their original states.  */
 
-  restore_cleanups (old_catcher->saved_cleanup_chain);
+  cexcept_restore_cleanups (old_catcher->saved_cleanup_chain);
 
   free (old_catcher);
 }
@@ -226,7 +226,7 @@ cexcept_state_mc_action_iter_1 (void)
 CEXCEPT_EXPORT void
 cexcept_throw (struct cexception exception)
 {
-  do_cleanups (all_cleanups ());
+  cexcept_do_cleanups (cexcept_all_cleanups ());
 
   /* Jump to the containing catch_errors() call, communicating REASON
      to that call via setjmp's return value.  Note that REASON can't
