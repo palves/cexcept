@@ -27,6 +27,10 @@
 
 #include <cexcept/libcexcept.h>
 
+/* Convenience aliases.  You'd do these project-wide.  */
+#define TRY_CATCH CEXCEPT_TRY
+#define throw_error cexcept_throw_error
+
 /* Helper function which does the work for make_cleanup_fclose.  */
 
 static void
@@ -83,7 +87,7 @@ test_fclose (void)
   bytes_read = fread (buf, 1, sizeof (buf), input);
 
   if (bytes_read == 0)
-    cexcept_throw_error (GENERIC_ERROR, "error: read some bytes\n");
+    throw_error (GENERIC_ERROR, "error: read some bytes\n");
 
   do_cleanups (old_chain);
 }
@@ -125,7 +129,7 @@ main (int argc, char *argv[])
   volatile struct cexception e;
   struct cleanup *old_chain;
 
-  CEXCEPT_TRY (e, RETURN_MASK_ERROR)
+  TRY_CATCH (e, RETURN_MASK_ERROR)
     {
       test_fclose ();
     }
@@ -134,7 +138,7 @@ main (int argc, char *argv[])
       fprintf (stderr, "caught: %s", e.message);
     }
 
-  CEXCEPT_TRY (e, RETURN_MASK_ERROR)
+  TRY_CATCH (e, RETURN_MASK_ERROR)
     {
       char *a;
 
@@ -151,7 +155,7 @@ main (int argc, char *argv[])
       return EXIT_SUCCESS;
     }
 
-  CEXCEPT_TRY (e, RETURN_MASK_ERROR)
+  TRY_CATCH (e, RETURN_MASK_ERROR)
     {
       char *a;
 
