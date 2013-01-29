@@ -38,12 +38,16 @@ typedef void (cexcept_make_cleanup_dtor_ftype) (void *);
    from that point onwards.
    The result is guaranteed to be non-NULL though.  */
 
-extern struct cexcept_cleanup *cexcept_make_cleanup (cexcept_make_cleanup_ftype *, void *);
+extern struct cexcept_cleanup *
+  cexcept_make_cleanup (cexcept_make_cleanup_ftype *, void *);
 
-extern struct cexcept_cleanup *cexcept_make_cleanup_dtor (cexcept_make_cleanup_ftype *, void *,
-					  cexcept_make_cleanup_dtor_ftype *);
+extern struct cexcept_cleanup *
+  cexcept_make_cleanup_dtor (cexcept_make_cleanup_ftype *,
+			     void *,
+			     cexcept_make_cleanup_dtor_ftype *);
 
-extern struct cexcept_cleanup *cexcept_make_final_cleanup (cexcept_make_cleanup_ftype *, void *);
+extern struct cexcept_cleanup *
+  cexcept_make_final_cleanup (cexcept_make_cleanup_ftype *, void *);
 
 /* A special value to pass to do_cleanups and do_final_cleanups
    to tell them to do all cleanups.  */
